@@ -1,3 +1,4 @@
+from http.client import HTTPException
 import joblib
 import numpy as np
 from fastapi import FastAPI
@@ -11,7 +12,7 @@ import cv2
 local_path = 'model.pkl'
 
 # Load the model from the specified path
-model = joblib.load(local_path)
+#model = joblib.load(local_path)
 
 # Verify the model is loaded
 print('Model loaded successfully')
@@ -22,6 +23,23 @@ app = FastAPI()
 # Define the data model for prediction input
 class PatientData(BaseModel):
     image_url: str
+
+    # Function to load the model
+def load_model():
+    # Download the model.pkl file from Git LFS
+    response = requests.get("https://github.com/mirnaihab/Stained_Images_Model/raw/main/model.pkl")
+    if response.status_code != 200:
+        raise HTTPException(status_code=500, detail="Failed to download the model file")
+
+    # Save the downloaded model.pkl file locally
+    with open(local_path, 'wb') as f:
+        f.write(response.content)
+
+# Load the model
+load_model()
+model = joblib.load(local_path)
+print('Model loaded successfully')
+
 
 # Define the prediction endpoint
 @app.post("/")
