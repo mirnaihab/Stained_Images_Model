@@ -9,10 +9,10 @@ import cv2
 import os
 
 # Define the path to the model file in your GitLab repository
-gitlab_raw_url = 'https://gitlab.com/your-username/your-repo-name/-/raw/main/model.pkl'
+gitlab_raw_url = 'https://gitlab.com/mirnaihab/Stained_Images_Model/main/model.pkl'
 
 # Retrieve the token from environment variables
-gitlab_token = os.getenv('GITLAB_TOKEN')
+gitlab_token = os.getenv('glpat-d7oawmWAbwtUc13K3Ebt')
 
 def download_model(gitlab_raw_url, gitlab_token):
     headers = {'Private-Token': gitlab_token}
