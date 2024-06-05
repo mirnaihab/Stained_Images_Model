@@ -10,7 +10,6 @@ import cv2
 # Define the path to the model file in your GitLab repository
 gitlab_raw_url = 'https://gitlab.com/mirnaihab/staining-images-model/Stained_Images_Model/-/blob/main/model.pkl'
 
-
 def download_model(gitlab_raw_url):
     response = requests.get(gitlab_raw_url)
     response.raise_for_status()  # Ensure we notice bad responses
