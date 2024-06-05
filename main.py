@@ -12,21 +12,23 @@ import os
 gitlab_raw_url = 'https://gitlab.com/mirnaihab/Stained_Images_Model/-/blob/main/model.pkl?ref_type=heads'
 
 # Retrieve the token from environment variables
-gitlab_token = os.getenv('glpat-DfJvs-b5X4UtBwyZjrV8')
+gitlab_token = os.getenv('glpat-d7oawmWAbwtUc13K3Ebt')
 
 def download_model(gitlab_raw_url, gitlab_token):
     headers = {'Private-Token': gitlab_token}
     response = requests.get(gitlab_raw_url, headers=headers)
     response.raise_for_status()  # Ensure we notice bad responses
     model_bytes = response.content
+    print(f"Downloaded model size: {len(model_bytes)} bytes")  # Debugging info
     model = joblib.load(BytesIO(model_bytes))
     return model
 
-# Load the model from GitLab
-model = download_model(gitlab_raw_url, gitlab_token)
-
-# Verify the model is loaded
-print('Model loaded successfully')
+try:
+    # Load the model from GitLab
+    model = download_model(gitlab_raw_url, gitlab_token)
+    print('Model loaded successfully')
+except Exception as e:
+    print(f"Error loading model: {e}")
 
 # Define the FastAPI application
 app = FastAPI()

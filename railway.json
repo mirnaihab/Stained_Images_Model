@@ -14,7 +14,7 @@
   "deploy": {
     "startCommand": "gunicorn -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:$PORT",
     "env": {
-      "GITLAB_TOKEN": "glpat-DfJvs-b5X4UtBwyZjrV8"
+      "GITLAB_TOKEN": "glpat-d7oawmWAbwtUc13K3Ebt"
     }
   }
 }
