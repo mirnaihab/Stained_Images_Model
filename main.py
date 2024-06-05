@@ -71,7 +71,6 @@ async def predict(data: PatientData):
 
 
 
-
 # import joblib
 # import numpy as np
 # from fastapi import FastAPI
