@@ -1,0 +1,11 @@
+services:
+  web:
+    image: "gcr.io/cloud-builders/gunicorn"
+    env:
+      - PORT: ${{PORT}}
+    command: "gunicorn -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:$PORT"
+    packages:
+      - name: libgl1-mesa-glx
+      - name: libglu1-mesa
+      - name: libosmesa6
+      - name: mesa-common-dev
