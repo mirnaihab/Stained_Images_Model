@@ -6,19 +6,24 @@ from io import BytesIO
 from PIL import Image
 import requests
 import cv2
+import os
 
 # Define the path to the model file in your GitLab repository
-gitlab_raw_url = 'https://gitlab.com/mirnaihab/staining-images-model/Stained_Images_Model/-/blob/main/model.pkl'
+gitlab_raw_url = 'https://gitlab.com/mirnaihab/Stained_Images_Model/-/blob/main/model.pkl?ref_type=heads'
 
-def download_model(gitlab_raw_url):
-    response = requests.get(gitlab_raw_url)
+# Retrieve the token from environment variables
+gitlab_token = os.getenv('glpat-DfJvs-b5X4UtBwyZjrV8')
+
+def download_model(gitlab_raw_url, gitlab_token):
+    headers = {'Private-Token': gitlab_token}
+    response = requests.get(gitlab_raw_url, headers=headers)
     response.raise_for_status()  # Ensure we notice bad responses
     model_bytes = response.content
     model = joblib.load(BytesIO(model_bytes))
     return model
 
 # Load the model from GitLab
-model = download_model(gitlab_raw_url)
+model = download_model(gitlab_raw_url, gitlab_token)
 
 # Verify the model is loaded
 print('Model loaded successfully')

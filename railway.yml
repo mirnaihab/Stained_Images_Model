@@ -3,6 +3,7 @@ services:
     image: "gcr.io/cloud-builders/gunicorn"
     env:
       - PORT: ${{PORT}}
+      - GITLAB_TOKEN: ${{glpat-DfJvs-b5X4UtBwyZjrV8}  # Add your GitLab token here
     command: "gunicorn -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:$PORT"
     packages:
       - name: libgl1-mesa-glx
