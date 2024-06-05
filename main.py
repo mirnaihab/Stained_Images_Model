@@ -9,10 +9,10 @@ import cv2
 import os
 
 # Define the path to the model file in your GitLab repository
-gitlab_raw_url = 'https://gitlab.com/mirnaihab/Stained_Images_Model/-/blob/main/model.pkl?ref_type=heads'
+gitlab_raw_url = 'https://gitlab.com/your-username/your-repo-name/-/raw/main/model.pkl'
 
 # Retrieve the token from environment variables
-gitlab_token = os.getenv('glpat-d7oawmWAbwtUc13K3Ebt')
+gitlab_token = os.getenv('GITLAB_TOKEN')
 
 def download_model(gitlab_raw_url, gitlab_token):
     headers = {'Private-Token': gitlab_token}
@@ -20,14 +20,18 @@ def download_model(gitlab_raw_url, gitlab_token):
     response.raise_for_status()  # Ensure we notice bad responses
     model_bytes = response.content
     print(f"Downloaded model size: {len(model_bytes)} bytes")  # Debugging info
-    model = joblib.load(BytesIO(model_bytes))
-    return model
+    with open('downloaded_model.pkl', 'wb') as f:
+        f.write(model_bytes)
+    return 'downloaded_model.pkl'
 
 try:
     # Load the model from GitLab
-    model = download_model(gitlab_raw_url, gitlab_token)
+    model_path = download_model(gitlab_raw_url, gitlab_token)
+    with open(model_path, 'rb') as f:
+        model = joblib.load(f)
     print('Model loaded successfully')
 except Exception as e:
+    model = None
     print(f"Error loading model: {e}")
 
 # Define the FastAPI application
@@ -40,6 +44,9 @@ class PatientData(BaseModel):
 # Define the prediction endpoint
 @app.post("/")
 async def predict(data: PatientData):
+    if model is None:
+        raise HTTPException(status_code=500, detail="Model is not loaded")
+
     try:
         # Print the image URL received
         print(f"Received image URL: {data.image_url}")
@@ -60,13 +67,12 @@ async def predict(data: PatientData):
 
         # Predict using the SVM model
         label_prediction = model.predict(normalized_image)
-        return label_prediction.tolist()[0]  # Convert to list for JSON serialization
+        return {"prediction": label_prediction.tolist()[0]}  # Convert to list for JSON serialization
 
     except Exception as e:
         print(f"Error: {e}")
         return {"error": str(e)}
-
-
+    
 # # Define the path to the model file on your local machine
 # local_path = 'model.pkl'
 
