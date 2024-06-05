@@ -1,7 +1,6 @@
-from http.client import HTTPException
 import joblib
 import numpy as np
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from io import BytesIO
 from PIL import Image
