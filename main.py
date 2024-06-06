@@ -9,7 +9,8 @@ import cv2
 import os
 
 # Define the path to the model file in your GitLab repository
-gitlab_raw_url = 'https://mirnaihab:Mirna@2000@gitlab.com/mirnaihab/Stained_Images_Model/main/model.pkl'
+#gitlab_raw_url = 'https://mirnaihab:Mirna@2000@gitlab.com/mirnaihab/Stained_Images_Model/main/model.pkl'
+gitlab_raw_url = 'https://mirnaihab:Mirna@2000@gitlab.com/mirnaihab/Stained_Images_Model/-/blob/main/model.pkl?ref_type=heads'
 
 # Retrieve the token from environment variables
 gitlab_token = os.getenv('glpat-d7oawmWAbwtUc13K3Ebt')
