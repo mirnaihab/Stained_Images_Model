@@ -7,6 +7,8 @@ from PIL import Image
 import requests
 import cv2
 import os
+import pickle5 as pickle
+
 
 # Define the path to the model file in your GitLab repository
 #gitlab_raw_url = 'https://mirnaihab:Mirna@2000@gitlab.com/mirnaihab/Stained_Images_Model/main/model.pkl'
@@ -38,7 +40,9 @@ try:
 
     # Load the model from GitLab
     model_bytes = download_model(gitlab_raw_url, gitlab_token)
-    model = joblib.load(model_bytes)
+   # model = joblib.load(model_bytes)
+    model = pickle.loads(model_bytes)
+
     print('Model loaded successfully')
 except Exception as e:
     model = None
