@@ -13,7 +13,8 @@ import os
 gitlab_raw_url = 'https://mirnaihab:Mirna@2000@gitlab.com/mirnaihab/Stained_Images_Model/-/blob/main/model.pkl?ref_type=heads'
 
 # Retrieve the token from environment variables
-gitlab_token = os.getenv('glpat-d7oawmWAbwtUc13K3Ebt')
+#gitlab_token = os.getenv('glpat-ZQ2oyG1sxw-fZbKCyrWP')
+gitlab_token ='glpat-ZQ2oyG1sxw-fZbKCyrWP'
 
 def download_model(gitlab_raw_url, gitlab_token):
     headers = {'Private-Token': gitlab_token}
@@ -26,6 +27,12 @@ def download_model(gitlab_raw_url, gitlab_token):
     return 'downloaded_model.pkl'
 
 try:
+      # Ensure the token is printed for debugging (do not print in production)
+    if gitlab_token:
+        print("GitLab token found")
+    else:
+        print("GitLab token not found")
+
     # Load the model from GitLab
     model_path = download_model(gitlab_raw_url, gitlab_token)
     with open(model_path, 'rb') as f:
