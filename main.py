@@ -43,6 +43,8 @@ try:
 except Exception as e:
     model = None
     print(f"Error loading model: {e}")
+    import traceback
+    print(traceback.format_exc())  # Print the full traceback for debugging
 
 # Define the FastAPI application
 app = FastAPI()
