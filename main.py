@@ -28,6 +28,7 @@ def download_model(gitlab_raw_url, gitlab_token):
     print(f"Downloaded model size: {model_bytes.getbuffer().nbytes} bytes")  # Debugging info
     return model_bytes
 
+
 try:
     # Ensure the token is printed for debugging (do not print in production)
     if gitlab_token:
