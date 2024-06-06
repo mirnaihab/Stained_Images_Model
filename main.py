@@ -8,40 +8,50 @@ import requests
 import cv2
 import os
 #import pypickle 
+import pickle
+
+filename = 'model.pkl'
+
+# Save model (serialize)
+pickle.dump(svc_grid, open(filename, 'wb'))
+
+# Load model (de-serialize)
+# pickle.load(open(filename, 'rb'))
 
 
 # Define the path to the model file in your GitLab repository
 #gitlab_raw_url = 'https://mirnaihab:Mirna@2000@gitlab.com/mirnaihab/Stained_Images_Model/main/model.pkl'
-gitlab_raw_url = 'https://mirnaihab:Mirna@2000@gitlab.com/mirnaihab/Stained_Images_Model/-/blob/main/model.pkl?ref_type=heads'
+# gitlab_raw_url = 'https://mirnaihab:Mirna@2000@gitlab.com/mirnaihab/Stained_Images_Model/-/blob/main/model.pkl?ref_type=heads'
 
-# Retrieve the token from environment variables
-#gitlab_token = os.getenv('glpat-ZQ2oyG1sxw-fZbKCyrWP')
-gitlab_token = os.getenv('GITLAB_TOKEN')
+# # Retrieve the token from environment variables
+# #gitlab_token = os.getenv('glpat-ZQ2oyG1sxw-fZbKCyrWP')
+# gitlab_token = os.getenv('GITLAB_TOKEN')
 
-def download_model(gitlab_raw_url, gitlab_token):
-    headers = {'Private-Token': gitlab_token}
-    response = requests.get(gitlab_raw_url, headers=headers, stream=True)
-    response.raise_for_status()  # Ensure we notice bad responses
-    model_bytes = BytesIO()
-    for chunk in response.iter_content(chunk_size=8192):
-        if chunk:
-            model_bytes.write(chunk)
-    model_bytes.seek(0)
-    print(f"Downloaded model size: {model_bytes.getbuffer().nbytes} bytes")  # Debugging info
-    return model_bytes
+# def download_model(gitlab_raw_url, gitlab_token):
+#     headers = {'Private-Token': gitlab_token}
+#     response = requests.get(gitlab_raw_url, headers=headers, stream=True)
+#     response.raise_for_status()  # Ensure we notice bad responses
+#     model_bytes = BytesIO()
+#     for chunk in response.iter_content(chunk_size=8192):
+#         if chunk:
+#             model_bytes.write(chunk)
+#     model_bytes.seek(0)
+#     print(f"Downloaded model size: {model_bytes.getbuffer().nbytes} bytes")  # Debugging info
+#     return model_bytes
 
 
 try:
     # Ensure the token is printed for debugging (do not print in production)
-    if gitlab_token:
-        print("GitLab token found")
-    else:
-        print("GitLab token not found")
+    # if gitlab_token:
+    #     print("GitLab token found")
+    # else:
+    #     print("GitLab token not found")
+    pickle.load(open(filename, 'rb'))
 
     # Load the model from GitLab
-    model_bytes = download_model(gitlab_raw_url, gitlab_token)
+    # model_bytes = download_model(gitlab_raw_url, gitlab_token)
    # model = joblib.load(model_bytes)
-    model = joblib.load('model.pkl')
+    # model = joblib.load('model.pkl')
 
     print('Model loaded successfully')
 except Exception as e:
