@@ -14,7 +14,7 @@ gitlab_raw_url = 'https://mirnaihab:Mirna@2000@gitlab.com/mirnaihab/Stained_Imag
 
 # Retrieve the token from environment variables
 #gitlab_token = os.getenv('glpat-ZQ2oyG1sxw-fZbKCyrWP')
-gitlab_token ='glpat-ZQ2oyG1sxw-fZbKCyrWP'
+gitlab_token = os.getenv('GITLAB_TOKEN')
 
 def download_model(gitlab_raw_url, gitlab_token):
     headers = {'Private-Token': gitlab_token}
