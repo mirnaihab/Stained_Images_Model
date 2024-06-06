@@ -18,25 +18,26 @@ gitlab_token = os.getenv('GITLAB_TOKEN')
 
 def download_model(gitlab_raw_url, gitlab_token):
     headers = {'Private-Token': gitlab_token}
-    response = requests.get(gitlab_raw_url, headers=headers)
+    response = requests.get(gitlab_raw_url, headers=headers, stream=True)
     response.raise_for_status()  # Ensure we notice bad responses
-    model_bytes = response.content
-    print(f"Downloaded model size: {len(model_bytes)} bytes")  # Debugging info
-    with open('downloaded_model.pkl', 'wb') as f:
-        f.write(model_bytes)
-    return 'downloaded_model.pkl'
+    model_bytes = BytesIO()
+    for chunk in response.iter_content(chunk_size=8192):
+        if chunk:
+            model_bytes.write(chunk)
+    model_bytes.seek(0)
+    print(f"Downloaded model size: {model_bytes.getbuffer().nbytes} bytes")  # Debugging info
+    return model_bytes
 
 try:
-      # Ensure the token is printed for debugging (do not print in production)
+    # Ensure the token is printed for debugging (do not print in production)
     if gitlab_token:
         print("GitLab token found")
     else:
         print("GitLab token not found")
 
     # Load the model from GitLab
-    model_path = download_model(gitlab_raw_url, gitlab_token)
-    with open(model_path, 'rb') as f:
-        model = joblib.load(f)
+    model_bytes = download_model(gitlab_raw_url, gitlab_token)
+    model = joblib.load(model_bytes)
     print('Model loaded successfully')
 except Exception as e:
     model = None
