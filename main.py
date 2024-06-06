@@ -7,7 +7,7 @@ from PIL import Image
 import requests
 import cv2
 import os
-import pickle5 as pickle
+import pypickle 
 
 
 # Define the path to the model file in your GitLab repository
@@ -41,7 +41,7 @@ try:
     # Load the model from GitLab
     model_bytes = download_model(gitlab_raw_url, gitlab_token)
    # model = joblib.load(model_bytes)
-    model = pickle.loads(model_bytes)
+    model = pypickle.load('model.pkl')
 
     print('Model loaded successfully')
 except Exception as e:
