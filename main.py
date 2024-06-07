@@ -34,11 +34,23 @@ async def predict(data: PatientData):
         # Print the path received
         print(f"Received X_path: {data.X_path}")
 
-        # Load and preprocess the image
-        X = cv2.imread(data.X_path)
-        if X is None:
-            return {"error": "Image not found at the specified path"}
+        # Check if the input is a URL or a local file path
+        if data.X_path.startswith('http://') or data.X_path.startswith('https://'):
+            # If it's a URL, download the image
+            response = requests.get(data.X_path)
+            if response.status_code != 200:
+                return {"error": "Failed to download the image"}
 
+            # Read the image from the downloaded content
+            image = Image.open(BytesIO(response.content))
+        else:
+            # If it's a local file path, load the image directly
+            if not os.path.exists(data.X_path):
+                return {"error": "Image not found at the specified path"}
+            image = Image.open(data.X_path)
+
+        # Convert the image to numpy array
+        X = np.array(image)
         X = cv2.resize(X, (300, 300))  # Ensure the image is resized to 300x300
         X = X.reshape(1, -1)  # Flatten the image
         X = X.astype('float32') / 255.0  # Normalize the pixel values
@@ -50,9 +62,6 @@ async def predict(data: PatientData):
     except Exception as e:
         print(f"Error: {e}")
         return {"error": str(e)}
-
-
-
 
 
 
