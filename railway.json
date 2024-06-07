@@ -1,20 +1,11 @@
 {
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
-    "builder": "NIXPACKS",
-    "nixpacksConfig": {
-      "packages": [
-        "libgl1-mesa-glx",
-        "libglu1-mesa",
-        "libosmesa6",
-        "mesa-common-dev"
-      ]
-    }
+    "builder": "NIXPACKS"
+
   },
   "deploy": {
-    "startCommand": "gunicorn -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:$PORT",
-    "env": {
-      "GITLAB_TOKEN": "glpat-ZQ2oyG1sxw-fZbKCyrWP"
-    }
+    "startCommand": "gunicorn -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:$PORT"
+
   }
 }

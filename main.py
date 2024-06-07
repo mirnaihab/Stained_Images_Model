@@ -7,7 +7,64 @@ from PIL import Image
 import requests
 import cv2
 import os
-import pypickle 
+
+# Define the path to the model file on your local machine
+local_path = 'model.pkl'
+
+# Load the model from the specified path with debugging
+try:
+    model = joblib.load(local_path, mmap_mode=None)
+    print('Model loaded successfully')
+except Exception as e:
+    print(f"Error loading model: {e}")
+
+# Define the FastAPI application
+app = FastAPI()
+
+# Define the data model for prediction input
+class PatientData(BaseModel):
+    X_path: str
+
+# Define the prediction endpoint
+@app.post("/")
+async def predict(data: PatientData):
+    try:
+        # Print the path received
+        print(f"Received X_path: {data.X_path}")
+
+        # Load and preprocess the image
+        X = cv2.imread(data.X_path)
+        if X is None:
+            return {"error": "Image not found at the specified path"}
+
+        X = cv2.resize(X, (300, 300))  # Ensure the image is resized to 300x300
+        X = X.reshape(1, -1)  # Flatten the image
+        X = X.astype('float32') / 255.0  # Normalize the pixel values
+
+        # Predict using the SVM model
+        label_prediction = model.predict(X)
+        return label_prediction.tolist()[0]  # Convert to list for JSON serialization
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return {"error": str(e)}
+
+
+
+
+
+
+
+# import joblib
+# import numpy as np
+# from fastapi import FastAPI, HTTPException
+# from pydantic import BaseModel
+# from io import BytesIO
+# from PIL import Image
+# import requests
+# import cv2
+# import os
+# import pypickle 
 
 
 # # Define the path to the model file in your GitLab repository
@@ -166,41 +223,5 @@ import pypickle
 #import cv2
 
 # Define the path to the model file on your local machine
-local_path = 'model.pkl'
+# 
 
-# Load the model from the specified path
-model = joblib.load(local_path)
-
-# Verify the model is loaded
-print('Model loaded successfully')
-
-# Define the FastAPI application
-app = FastAPI()
- 
-# Define the data model for prediction input
-class PatientData(BaseModel):
-    X_path : str
-
-# Define the prediction endpoint
-@app.post("/")
-async def predict(data: PatientData):
-    try:
-        # Print the path received
-        print(f"Received X_path: {data.X_path}")
-
-        # Load and preprocess the image
-        X = cv2.imread(data.X_path)
-        if X is None:
-            return {"error": "Image not found at the specified path"}
-
-        X = cv2.resize(X, (300, 300))  # Ensure the image is resized to 300x300
-        X = X.reshape(1, -1)  # Flatten the image
-        X = X.astype('float32') / 255.0  # Normalize the pixel values
-
-        # Predict using the SVM model
-        label_prediction = model.predict(X)
-        return label_prediction.tolist()[0]  # Convert to list for JSON serialization
-
-    except Exception as e:
-        print(f"Error: {e}")
-        return {"error": str(e)}
