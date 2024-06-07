@@ -7,20 +7,11 @@ from PIL import Image
 import requests
 import cv2
 import os
-#import pypickle 
-import pickle
-
-filename = 'model.pkl'
-
-# Save model (serialize)
-pickle.dump(svc_grid, open(filename, 'wb'))
-
-# Load model (de-serialize)
-# pickle.load(open(filename, 'rb'))
+import pypickle 
 
 
-# Define the path to the model file in your GitLab repository
-#gitlab_raw_url = 'https://mirnaihab:Mirna@2000@gitlab.com/mirnaihab/Stained_Images_Model/main/model.pkl'
+# # Define the path to the model file in your GitLab repository
+# #gitlab_raw_url = 'https://mirnaihab:Mirna@2000@gitlab.com/mirnaihab/Stained_Images_Model/main/model.pkl'
 # gitlab_raw_url = 'https://mirnaihab:Mirna@2000@gitlab.com/mirnaihab/Stained_Images_Model/-/blob/main/model.pkl?ref_type=heads'
 
 # # Retrieve the token from environment variables
@@ -40,64 +31,63 @@ pickle.dump(svc_grid, open(filename, 'wb'))
 #     return model_bytes
 
 
-try:
-    # Ensure the token is printed for debugging (do not print in production)
-    # if gitlab_token:
-    #     print("GitLab token found")
-    # else:
-    #     print("GitLab token not found")
-    pickle.load(open(filename, 'rb'))
+# try:
+#     # Ensure the token is printed for debugging (do not print in production)
+#     if gitlab_token:
+#         print("GitLab token found")
+#     else:
+#         print("GitLab token not found")
 
-    # Load the model from GitLab
-    # model_bytes = download_model(gitlab_raw_url, gitlab_token)
-   # model = joblib.load(model_bytes)
-    # model = joblib.load('model.pkl')
+#     # Load the model from GitLab
+#     model_bytes = download_model(gitlab_raw_url, gitlab_token)
+#    # model = joblib.load(model_bytes)
+#     model = joblib.load('model.pkl')
 
-    print('Model loaded successfully')
-except Exception as e:
-    model = None
-    print(f"Error loading model: {e}")
-    import traceback
-    print(traceback.format_exc())  # Print the full traceback for debugging
+#     print('Model loaded successfully')
+# except Exception as e:
+#     model = None
+#     print(f"Error loading model: {e}")
+#     import traceback
+#     print(traceback.format_exc())  # Print the full traceback for debugging
 
-# Define the FastAPI application
-app = FastAPI()
+# # Define the FastAPI application
+# app = FastAPI()
 
-# Define the data model for prediction input
-class PatientData(BaseModel):
-    image_url: str
+# # Define the data model for prediction input
+# class PatientData(BaseModel):
+#     image_url: str
 
-# Define the prediction endpoint
-@app.post("/")
-async def predict(data: PatientData):
-    if model is None:
-        raise HTTPException(status_code=500, detail="Model is not loaded")
+# # Define the prediction endpoint
+# @app.post("/")
+# async def predict(data: PatientData):
+#     if model is None:
+#         raise HTTPException(status_code=500, detail="Model is not loaded")
 
-    try:
-        # Print the image URL received
-        print(f"Received image URL: {data.image_url}")
+#     try:
+#         # Print the image URL received
+#         print(f"Received image URL: {data.image_url}")
 
-        # Download the image from the URL
-        response = requests.get(data.image_url)
-        if response.status_code != 200:
-            return {"error": "Failed to download the image from the provided URL"}
+#         # Download the image from the URL
+#         response = requests.get(data.image_url)
+#         if response.status_code != 200:
+#             return {"error": "Failed to download the image from the provided URL"}
 
-        # Convert the downloaded image to a NumPy array
-        image = Image.open(BytesIO(response.content))
-        image_array = np.array(image)
+#         # Convert the downloaded image to a NumPy array
+#         image = Image.open(BytesIO(response.content))
+#         image_array = np.array(image)
 
-        # Preprocess the image
-        resized_image = cv2.resize(image_array, (300, 300))
-        flattened_image = resized_image.reshape(1, -1)
-        normalized_image = flattened_image.astype('float32') / 255.0
+#         # Preprocess the image
+#         resized_image = cv2.resize(image_array, (300, 300))
+#         flattened_image = resized_image.reshape(1, -1)
+#         normalized_image = flattened_image.astype('float32') / 255.0
 
-        # Predict using the SVM model
-        label_prediction = model.predict(normalized_image)
-        return {"prediction": label_prediction.tolist()[0]}  # Convert to list for JSON serialization
+#         # Predict using the SVM model
+#         label_prediction = model.predict(normalized_image)
+#         return {"prediction": label_prediction.tolist()[0]}  # Convert to list for JSON serialization
 
-    except Exception as e:
-        print(f"Error: {e}")
-        return {"error": str(e)}
+#     except Exception as e:
+#         print(f"Error: {e}")
+#         return {"error": str(e)}
     
 # # Define the path to the model file on your local machine
 # local_path = 'model.pkl'
@@ -173,44 +163,44 @@ async def predict(data: PatientData):
 
 # import cv2
 
-# #import cv2
+#import cv2
 
-# # Define the path to the model file on your local machine
-# local_path = 'model.pkl'
+# Define the path to the model file on your local machine
+local_path = 'model.pkl'
 
-# # Load the model from the specified path
-# model = joblib.load(local_path)
+# Load the model from the specified path
+model = joblib.load(local_path)
 
-# # Verify the model is loaded
-# print('Model loaded successfully')
+# Verify the model is loaded
+print('Model loaded successfully')
 
-# # Define the FastAPI application
-# app = FastAPI()
+# Define the FastAPI application
+app = FastAPI()
  
-# # Define the data model for prediction input
-# class PatientData(BaseModel):
-#     X_path : str
+# Define the data model for prediction input
+class PatientData(BaseModel):
+    X_path : str
 
-# # Define the prediction endpoint
-# @app.post("/")
-# async def predict(data: PatientData):
-#     try:
-#         # Print the path received
-#         print(f"Received X_path: {data.X_path}")
+# Define the prediction endpoint
+@app.post("/")
+async def predict(data: PatientData):
+    try:
+        # Print the path received
+        print(f"Received X_path: {data.X_path}")
 
-#         # Load and preprocess the image
-#         X = cv2.imread(data.X_path)
-#         if X is None:
-#             return {"error": "Image not found at the specified path"}
+        # Load and preprocess the image
+        X = cv2.imread(data.X_path)
+        if X is None:
+            return {"error": "Image not found at the specified path"}
 
-#         X = cv2.resize(X, (300, 300))  # Ensure the image is resized to 300x300
-#         X = X.reshape(1, -1)  # Flatten the image
-#         X = X.astype('float32') / 255.0  # Normalize the pixel values
+        X = cv2.resize(X, (300, 300))  # Ensure the image is resized to 300x300
+        X = X.reshape(1, -1)  # Flatten the image
+        X = X.astype('float32') / 255.0  # Normalize the pixel values
 
-#         # Predict using the SVM model
-#         label_prediction = model.predict(X)
-#         return label_prediction.tolist()[0]  # Convert to list for JSON serialization
+        # Predict using the SVM model
+        label_prediction = model.predict(X)
+        return label_prediction.tolist()[0]  # Convert to list for JSON serialization
 
-#     except Exception as e:
-#         print(f"Error: {e}")
-#         return {"error": str(e)}
+    except Exception as e:
+        print(f"Error: {e}")
+        return {"error": str(e)}
