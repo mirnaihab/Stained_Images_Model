@@ -9,7 +9,6 @@ import cv2
 import os
 
 
-
 # Define the path to the model file on your local machine
 local_path = 'model.pkl'
 
